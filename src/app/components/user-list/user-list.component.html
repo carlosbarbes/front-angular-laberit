@@ -1,0 +1,73 @@
+<div class="container mx-auto p-16 h-screen flex flex-col">
+  <h1 class="text-3xl font-bold mb-4 text-center">
+    Usuarios de tecnología innovadora
+  </h1>
+  <div class="flex-1 overflow-y-auto flex flex-col justify-start">
+    <div class="flex justify-end">
+      <button
+        class="relative group flex items-center justify-center bg-white mb-8 text-black text-lg w-14 h-14 rounded-[50%] shadow-md transition-all duration-300 cursor-pointer hover:w-auto hover:rounded-lg hover:bg-[#2768D9] hover:text-white px-2"
+        (click)="createUser()"
+      >
+        <span
+          class="absolute inset-0 flex items-center justify-center text-4xl font-bold transform -translate-y-[0.1em] group-hover:hidden"
+        >
+          +
+        </span>
+
+        <span class="hidden group-hover:inline-block w-full text-center px-2">
+          Añadir usuario
+        </span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+      @for (user of users$ | async; track user.id) {
+        <div
+          class="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center transition hover:scale-105 cursor-pointer"
+          (click)="goToDetail(user.id)"
+        >
+          <img
+            [src]="user.avatar"
+            [alt]="user.first_name + ' ' + user.last_name"
+            class="w-20 h-20 rounded-full border"
+          >
+          <h2 class="text-lg font-semibold mt-2">
+            {{ user.first_name }} {{ user.last_name }}
+          </h2>
+        </div>
+      }
+      @empty {
+        <p class="col-span-full text-center text-gray-500">
+          No hay usuarios disponibles
+        </p>
+      }
+    </div>
+
+    <div class="mt-4 flex justify-center items-center space-x-4">
+      @if (currentPage > 1) {
+        <button
+        class="bg-gray-200 hover:bg-gray-300 text-gray-600 p-2 rounded-full cursor-pointer"
+        (click)="previousPage()"
+        >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        </button>
+      }
+      <span>
+        {{ currentPage }}/{{ totalPages }}
+      </span>
+      @if (currentPage < totalPages) {
+        <button
+        class="bg-gray-200 hover:bg-gray-300 text-gray-600 p-2 rounded-full cursor-pointer"
+        (click)="nextPage()"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      }
+    </div>
+  </div>
+</div>
+
