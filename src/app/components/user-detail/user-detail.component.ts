@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { User } from '../../models/user.model';
+import { DefaultAvatarComponent } from "../../shared/default-avatar.component";
 
 @Component({
   selector: 'app-user-detail',
-  imports: [],
+  imports: [DefaultAvatarComponent],
   templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.css']
 })
 export class UserDetailComponent {
   @Input() user: User | null = null;
@@ -17,7 +17,6 @@ export class UserDetailComponent {
   }
 
   edit(): void {
-    debugger;
     this.editUser.emit();
   }
 }

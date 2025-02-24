@@ -1,16 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { CommonModule, NgIfContext } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../models/user.model';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { UserDetailComponent } from "../user-detail/user-detail.component";
+import { DefaultAvatarComponent } from "../../shared/default-avatar.component";
+import { SelectedUserService } from '../../core/services/selected-user.service';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  imports: [CommonModule, RouterModule, UserDetailComponent]
+  imports: [CommonModule, RouterModule, UserDetailComponent, DefaultAvatarComponent]
 })
 export class UserListComponent implements OnInit, OnDestroy {
   users$!: Observable<User[]>;
@@ -19,18 +21,20 @@ export class UserListComponent implements OnInit, OnDestroy {
   selectedUser: User | null = null;
   private queryParamsSub!: Subscription;
   private subscriptions: Subscription[] = [];
+  currentPageSubject: any;
+  defaultAvatarList: TemplateRef<NgIfContext<string>> | null | undefined;
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private selectedUserService: SelectedUserService
+  ) { }
 
   ngOnInit(): void {
-    this.queryParamsSub = this.route.queryParams.subscribe(params => {
-      const page = +params['page'] || 1;
-      this.userService.loadUsers(page);
-    });
+    if (!this.userService.hasLocalData()) {
+      this.userService.loadUsers(1);
+    }
     this.users$ = this.userService.getUsers();
 
     this.subscriptions.push(
@@ -40,7 +44,9 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.queryParamsSub.unsubscribe();
+    if (this.queryParamsSub) {
+      this.queryParamsSub.unsubscribe();
+    }
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
@@ -51,22 +57,24 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   goToEdit(user: User): void {
-    this.router.navigate(['/users', user.id, 'edit']);
+    this.selectedUserService.setUser(user);
+    this.router.navigate(['/users/edit']);
   }
 
   createUser(): void {
+    this.selectedUserService.clear();
     this.router.navigate(['/users/new']);
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
-      this.router.navigate([], { queryParams: { page: this.currentPage + 1 } });
+      this.userService.setPage(this.currentPage + 1);
     }
   }
 
   previousPage() {
     if (this.currentPage > 1) {
-      this.router.navigate([], { queryParams: { page: this.currentPage - 1 } });
+      this.userService.setPage(this.currentPage - 1);
     }
   }
 }

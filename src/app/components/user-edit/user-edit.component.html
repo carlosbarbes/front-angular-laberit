@@ -1,1 +1,68 @@
-<p>user-edit works!</p>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+  <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+    <h1 class="text-2xl font-bold mb-4">
+      {{ isEditMode ? 'Editar Usuario' : 'Nuevo Usuario' }}
+    </h1>
+
+    <div class="flex justify-center mb-4">
+      @if (currentUser?.avatar) {
+      <img [src]="currentUser?.avatar" alt="Avatar" class="w-24 h-24 rounded-full border">
+      } @else {
+      <div class="w-24 h-24">
+        <app-default-avatar />
+      </div>
+      }
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="first_name" class="block text-gray-700 mb-1">Nombre</label>
+        <input id="first_name" type="text" formControlName="first_name"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Introduce el nombre">
+        @if (userForm.get('first_name')?.invalid && userForm.get('first_name')?.touched) {
+        <p class="text-red-500 text-sm mt-1">El nombre es requerido.</p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="last_name" class="block text-gray-700 mb-1">Apellido</label>
+        <input id="last_name" type="text" formControlName="last_name"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Introduce el apellido">
+        @if (userForm.get('last_name')?.invalid && userForm.get('last_name')?.touched) {
+        <p class="text-red-500 text-sm mt-1">El apellido es requerido.</p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700 mb-1">Email</label>
+        <input id="email" type="email" formControlName="email"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Introduce el email">
+        @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+        <p class="text-red-500 text-sm mt-1">Introduce un email válido.</p>
+        }
+      </div>
+
+      <div class="flex justify-between items-center">
+        <div>
+          @if (isEditMode) {
+          <button type="button" (click)="onDelete()"
+            class="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded transition cursor-pointer">
+            Borrar
+          </button>
+          }
+        </div>
+        <div class="flex space-x-2">
+          <button type="button" (click)="onCancel()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded transition cursor-pointer">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -12,7 +12,7 @@ export const routes: Routes = [
       .then(m => m.UserEditComponent)
   },
   {
-    path: 'users/:id/edit',
+    path: 'users/edit',
     loadComponent: () => import('./components/user-edit/user-edit.component')
       .then(m => m.UserEditComponent)
   },

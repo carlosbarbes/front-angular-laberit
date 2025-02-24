@@ -28,17 +28,22 @@
 
     @if (user) {
       <div class="flex flex-col items-center">
-        <img
-          [src]="user.avatar"
-          [alt]="user.first_name + ' ' + user.last_name"
-          class="w-48 h-48 rounded-full border mb-4"
-        >
+        @if (user.avatar) {
+          <img
+            [src]="user.avatar"
+            [alt]="user.first_name + ' ' + user.last_name"
+            class="w-48 h-48 rounded-full border mb-4"
+          >
+        } @else {
+          <div class="w-48 h-48 mb-4">
+            <app-default-avatar/>
+          </div>
+        }
         <h2 class="text-xl font-bold mb-2">{{ user.first_name }} {{ user.last_name }}</h2>
         <p class="text-gray-600 mb-2"><strong>ID:</strong> {{ user.id }}</p>
         <p class="text-gray-600 mb-2"><strong>Email:</strong> {{ user.email }}</p>
       </div>
-    }
-    @else {
+    } @else {
       <p class="text-center text-gray-500">No se encontró información del usuario.</p>
     }
   </div>
