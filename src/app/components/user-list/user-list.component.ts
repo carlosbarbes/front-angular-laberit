@@ -5,17 +5,18 @@ import { UserService } from '../../core/services/user.service';
 import { User } from '../../models/user.model';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { UserDetailComponent } from "../user-detail/user-detail.component";
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, UserDetailComponent]
 })
 export class UserListComponent implements OnInit, OnDestroy {
   users$!: Observable<User[]>;
   currentPage: number = 1;
   totalPages: number = 1;
+  selectedUser: User | null = null;
   private queryParamsSub!: Subscription;
   private subscriptions: Subscription[] = [];
 
@@ -44,7 +45,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   goToDetail(userId: number): void {
-    this.router.navigate(['/users', userId]);
+    this.userService.getUser(userId).subscribe(user => {
+      this.selectedUser = user || null;
+    });
+  }
+
+  goToEdit(user: User): void {
+    this.router.navigate(['/users', user.id, 'edit']);
   }
 
   createUser(): void {
@@ -63,4 +70,3 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 }
-

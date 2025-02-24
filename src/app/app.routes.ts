@@ -12,11 +12,6 @@ export const routes: Routes = [
       .then(m => m.UserEditComponent)
   },
   {
-    path: 'users/:id',
-    loadComponent: () => import('./components/user-detail/user-detail.component')
-      .then(m => m.UserDetailComponent)
-  },
-  {
     path: 'users/:id/edit',
     loadComponent: () => import('./components/user-edit/user-edit.component')
       .then(m => m.UserEditComponent)
